@@ -1,0 +1,122 @@
+import java.util.*;
+
+// Container class
+class Container {
+    private String id;
+    private String description;
+    private String weight;
+
+    public Container(String id, String description, String weight) {
+        this.id = id;
+        this.description = description;
+        this.weight = weight;
+    }
+
+    @Override
+    public String toString() {
+        return id + " | " + description + " | " + weight;
+    }
+}
+
+// Ship class
+class Ship {
+    private String name;
+    private String captain;
+
+    public Ship(String name, String captain) {
+        this.name = name;
+        this.captain = captain;
+    }
+
+    @Override
+    public String toString() {
+        return name + " | " + captain;
+    }
+}
+
+// Main system
+public class PortManagement {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        ArrayDeque<Container> containerStack = new ArrayDeque<>();
+        ArrayDeque<Ship> shipQueue = new ArrayDeque<>();
+
+        int choice;
+        do {
+            System.out.println("\n=== Port Container Management System ===");
+            System.out.println("[1] Store container (push)");
+            System.out.println("[2] View port containers");
+            System.out.println("[3] Register arriving ship (enqueue)");
+            System.out.println("[4] View waiting ships");
+            System.out.println("[5] Load next ship (pop + poll)");
+            System.out.println("[0] Exit");
+            System.out.print("Choice: ");
+            choice = sc.nextInt();
+            sc.nextLine(); // clear buffer
+
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter Container ID: ");
+                    String id = sc.nextLine();
+                    System.out.print("Enter Description: ");
+                    String desc = sc.nextLine();
+                    System.out.print("Enter Weight (e.g., 500kg): ");
+                    String weight = sc.nextLine();
+
+                    Container c = new Container(id, desc, weight);
+                    containerStack.push(c);
+                    System.out.println("Stored: " + c);
+                    break;
+
+                case 2:
+                    System.out.println("\nTOP →");
+                    for (Container con : containerStack) {
+                        System.out.println(con);
+                    }
+                    System.out.println("← BOTTOM");
+                    break;
+
+                case 3:
+                    System.out.print("Enter Ship Name: ");
+                    String name = sc.nextLine();
+                    System.out.print("Enter Captain Name: ");
+                    String cap = sc.nextLine();
+
+                    Ship s = new Ship(name, cap);
+                    shipQueue.add(s);
+                    System.out.println("Registered: " + s);
+                    break;
+
+                case 4:
+                    System.out.println("\nFRONT →");
+                    for (Ship sh : shipQueue) {
+                        System.out.println(sh);
+                    }
+                    System.out.println("← REAR");
+                    break;
+
+                case 5:
+                    if (containerStack.isEmpty() || shipQueue.isEmpty()) {
+                        System.out.println("Not enough containers or ships to load.");
+                    } else {
+                        Container loaded = containerStack.pop();
+                        Ship target = shipQueue.poll();
+                        System.out.println("Loaded: " + loaded + " → " + target);
+                        System.out.println("Remaining containers: " + containerStack.size());
+                        System.out.println("Remaining ships waiting: " + shipQueue.size());
+                    }
+                    break;
+
+                case 0:
+                    System.out.println("Exiting program...");
+                    break;
+
+                default:
+                    System.out.println("Invalid choice.");
+            }
+        } while (choice != 0);
+
+        sc.close();
+    }
+}
